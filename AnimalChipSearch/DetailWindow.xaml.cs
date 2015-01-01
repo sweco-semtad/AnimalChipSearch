@@ -22,10 +22,22 @@ namespace AnimalChipSearch
     {
         private Animal _animal;
 
-        public DetailWindow(Animal animalDetails)
-        {
-            InitializeComponent();
+        SKKRegisterSok.SKKSearch skkSearch = new SKKRegisterSok.SKKSearch();
 
+        public DetailWindow(Animal animalDetails, Window parent)
+        {
+            Owner = parent;
+            InitializeComponent();
+            Update(animalDetails);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        internal void Update(Animal animalDetails)
+        {
             _animal = animalDetails;
 
             LblName.Content = animalDetails.Namn;
@@ -43,11 +55,6 @@ namespace AnimalChipSearch
             LblAgareTelArb.Content = animalDetails.Agare.TelArbete;
             LblAgareTelHem.Content = animalDetails.Agare.TelHem;
             LblAgareTelMob.Content = animalDetails.Agare.TelMobil;
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
         }
     }
 }

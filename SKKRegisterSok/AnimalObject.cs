@@ -6,14 +6,16 @@ using System.Threading.Tasks;
 
 namespace SKKRegisterSok
 {
+    public enum Djurslag { Katt, Hund }
+
+    public enum Kon { Hund = 0, Tik = 1, Hane = 2, Hona = 3 }
+
     public class AnimalList
     {
+        public Djurslag Species { get; set; }
         public String errorMessage { get; set; }
         public ICollection<Animal> animals = new List<Animal>();
-        public ViewState viewState = new ViewState();
     }
-
-    public enum Kon { Hund = 0, Tik = 1}
 
     public class Animal
     {
@@ -27,12 +29,15 @@ namespace SKKRegisterSok
         public String RegId { get; set; }
         public String DbId { get; set; }
         public String Namn { get; set; }
+        public Djurslag Species { get; set; }
         public String Ras { get; set; }
         public Kon Kon { get; set; }
         public bool Saknad { get; set; }
         public String Harlag { get; set; }
         public String Farg { get; set; }
         public String Fodelsedatum { get; set; }
+        public bool Kastrerad { get; set; }
+
         public Owner Agare { get; set; }
 
         public String linkNum { get; set; }

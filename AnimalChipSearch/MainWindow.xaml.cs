@@ -38,8 +38,14 @@ namespace AnimalChipSearch
             String chipId = chipIdTxt.Text;
             String inkId = inkIdTxt.Text;
 
-            animalList = skkSearch.SearchDogs(inkId, chipId);
-
+            if (((ComboBoxItem)DjurslagCB.SelectedItem).Name == "Hund")
+            {
+                animalList = skkSearch.SearchDogs(inkId, chipId);
+            }
+            else
+            {
+                animalList = skkSearch.SearchCats(inkId, chipId);
+            }
 
             if (animalList.errorMessage != null && animalList.errorMessage != String.Empty)
             {
@@ -58,17 +64,20 @@ namespace AnimalChipSearch
 
         }
 
-        private void ListViewItemClick(object sender, MouseButtonEventArgs e)
+        public void ListViewItemDoubleClick(object sender, RoutedEventArgs e)
         {
             try
             {
                 var item = sender as ListViewItem;
-                if (item != null && item.IsSelected)
-                {
-                    Animal dog = skkSearch.GetDogDetails((Animal)item.DataContext, animalList.viewState);
-                    DetailWindow dtWindow = new DetailWindow(dog);
-                    dtWindow.Show();
-                }
+
+                Animal animal = null;
+                if (animalList.Species == Djurslag.Hund)
+                    animal = skkSearch.GetDogDetails((Animal)item.DataContext);
+                else
+                    animal = skkSearch.GetCatDetails((Animal)item.DataContext);
+
+                DetailWindow dtWindow = new DetailWindow(animal, this);
+                dtWindow.ShowDialog();
             }
             catch (Exception exc)
             {

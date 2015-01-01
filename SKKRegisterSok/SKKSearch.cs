@@ -10,22 +10,38 @@ using HtmlAgilityPack;
 
 namespace SKKRegisterSok
 {
+
     public class SKKSearch
     {
         private Requests _req = new Requests();
 
+        private static String VIEW_STATE = "__VIEWSTATE";
+
+        /// <summary>
+        /// Search dogs
+        /// </summary>
+        /// <param name="inkId"></param>
+        /// <param name="chiId"></param>
+        /// <returns></returns>
         public AnimalList SearchDogs(String inkId, String chiId)
         {
             String response = _req.DoDogRequest(inkId, chiId);
 
             if (response != String.Empty)
             {
-                return Parse(response, inkId, chiId);
+                return ParseDogs(response, inkId, chiId);
             }
             throw new Exception("Empty response");
         }
 
-        private AnimalList Parse(String response, String inkId, String chipId)
+        /// <summary>
+        /// Parse dog search response HTML
+        /// </summary>
+        /// <param name="response"></param>
+        /// <param name="inkId"></param>
+        /// <param name="chipId"></param>
+        /// <returns></returns>
+        private AnimalList ParseDogs(String response, String inkId, String chipId)
         {
             HtmlDocument doc = new HtmlDocument();
             doc.LoadHtml(response);
@@ -35,29 +51,8 @@ namespace SKKRegisterSok
             // If we got some dogs, save the view state
             if (dogTableNode != null)
             {
-                //var animalList = ParseDogs(dogTableNode);
-
-                //if (animalList.animals.Count > 0)
-                //{
-                //    var viewState = animalList.viewState;
-                //    viewState.EventTarget = getInputValue(doc, ViewState.EVENT_TARGET);
-                //    viewState.EventArgument = getInputValue(doc, ViewState.EVENT_ARGUMENT);
-                //    viewState.LastFocus = getInputValue(doc, ViewState.LAST_FOCUS);
-                //    viewState.ViewStateString = getInputValue(doc, ViewState.VIEW_STATE);
-                //    viewState.EventTarget = getInputValue(doc, ViewState.EVENT_TARGET);
-                //    viewState.TatooId = inkId;
-                //    viewState.ChipId = chipId;
-
-                //    // First, deserialize the string into a Triplet
-                //    LosFormatter los = new LosFormatter();
-                //    object viewStateObj = los.Deserialize(viewState.ViewStateString);
-
-                //    byte[] data = Convert.FromBase64String(viewState.ViewStateString);
-                //    string decodedString = Encoding.UTF8.GetString(data);
-                //}
-
                 ViewStateParser parser = new ViewStateParser();
-                return parser.ParseViewStateGraph(getInputValue(doc, ViewState.VIEW_STATE));
+                return parser.ParseViewStateGraph(getInputValue(doc, VIEW_STATE), Djurslag.Hund);
             }
 
             var list = new AnimalList();
@@ -65,98 +60,15 @@ namespace SKKRegisterSok
             return list;
         }
 
-        //private AnimalList ParseDogs(HtmlNodeCollection dogTableNodes)
-        //{
-        //    AnimalList resultList = new AnimalList();
-
-        //    HtmlNodeCollection dogRows = dogTableNodes[0].SelectNodes("//tr[@class='datagridItem']");
-
-        //    foreach (HtmlNode dogRow in dogRows)
-        //    {
-        //        var animal = new Animal();
-
-        //        int columnIndex = 0;
-        //        foreach (HtmlNode tdNode in dogRow.ChildNodes)
-        //        {
-        //            if (tdNode.Name != "td")
-        //            {
-        //                continue;
-        //            }
-
-        //            switch (columnIndex)
-        //            {
-        //                case 0:
-        //                    var nodes = tdNode.SelectNodes("font/a");
-        //                    if (nodes != null)
-        //                    {
-        //                        HtmlNode inkAnchorNode = nodes[0];
-        //                        animal.TatueringsId = inkAnchorNode.InnerText;
-        //                    }
-        //                    break;
-        //                case 1:
-        //                    nodes = tdNode.SelectNodes("font/a");
-        //                    if (nodes != null)
-        //                    {
-        //                        HtmlNode chipAnchorNode = nodes[0];
-        //                        animal.ChipId = chipAnchorNode.InnerText;
-        //                        var jsLink = chipAnchorNode.Attributes[1].Value;
-        //                        animal.linkNum = jsLink.Replace("javascript:__doPostBack(&#39;", "").Replace("&#39;,&#39;&#39;)", "");
-        //                    }
-        //                    break;
-        //                case 2:
-        //                    nodes = tdNode.SelectNodes("font/span");
-        //                    if (nodes != null)
-        //                    {
-        //                        HtmlNode regNrNode = nodes[0];
-        //                        animal.RegId = regNrNode.InnerText;
-        //                    }
-        //                    break;
-        //                case 3:
-        //                    nodes = tdNode.SelectNodes("font/span");
-        //                    if (nodes != null)
-        //                    {
-        //                        HtmlNode node = nodes[0];
-        //                        animal.Namn = node.InnerText.Trim();
-        //                    }
-        //                    break;
-        //                case 4:
-        //                    nodes = tdNode.SelectNodes("font/span");
-        //                    if (nodes != null)
-        //                    {
-        //                        HtmlNode node = nodes[0];
-        //                        animal.Kon = node.InnerText.Trim() == "T" ? Kon.Tik : Kon.Hund;
-        //                    }
-        //                    break;
-        //                case 5:
-        //                    nodes = tdNode.SelectNodes("font/span");
-        //                    if (nodes != null)
-        //                    {
-        //                        HtmlNode node = nodes[0];
-        //                        animal.Ras = node.InnerText.Trim();
-        //                    }
-        //                    break;
-        //                case 6:
-        //                    nodes = tdNode.SelectNodes("font/span");
-        //                    if (nodes != null)
-        //                    {
-        //                        HtmlNode node = nodes[0];
-        //                        animal.Saknad = node.InnerText == String.Empty ? false : true;
-        //                    }
-        //                    break;
-        //            }
-        //            columnIndex++;
-        //        }
-
-        //        resultList.animals.Add(animal);
-        //    }
-
-        //    return resultList;
-        //}
-
-        public Animal GetDogDetails(Animal dog, ViewState viewState) {
+        /// <summary>
+        /// Search for a specific dog
+        /// </summary>
+        /// <param name="dog"></param>
+        /// <returns></returns>
+        public Animal GetDogDetails(Animal dog) {
 
             // Make the request
-            String response = _req.DoSpecDogRequest(dog, viewState);
+            String response = _req.DoSpecDogRequest(dog);
 
             HtmlDocument doc = new HtmlDocument();
             doc.LoadHtml(response);
@@ -170,6 +82,12 @@ namespace SKKRegisterSok
             throw new Exception("Ett fel uppstod när inläsning av hund genomfördes.");
         }
 
+        /// <summary>
+        /// Parse specific dog response
+        /// </summary>
+        /// <param name="catTableNodes"></param>
+        /// <param name="cat"></param>
+        /// <returns></returns>
         private Animal ParseDog(HtmlDocument dogTableNodes, Animal dog)
         {
             var chipNumberNode = dogTableNodes.DocumentNode.SelectNodes("//span[@id='lblChipnr']");
@@ -213,9 +131,131 @@ namespace SKKRegisterSok
             }
 
             return dog;
-        } 
+        }
 
-        // Find the id inside a span
+        /// <summary>
+        /// Search cats
+        /// </summary>
+        /// <param name="inkId"></param>
+        /// <param name="chiId"></param>
+        /// <returns></returns>
+        public AnimalList SearchCats(String inkId, String chiId)
+        {
+            String response = _req.DoCatRequest(inkId, chiId);
+
+            if (response != String.Empty)
+            {
+                return ParseCats(response, inkId, chiId);
+            }
+            throw new Exception("Empty response");
+        }
+
+        /// <summary>
+        /// Parse cat search response HTML
+        /// </summary>
+        /// <param name="response"></param>
+        /// <param name="inkId"></param>
+        /// <param name="chipId"></param>
+        /// <returns></returns>
+        private AnimalList ParseCats(String response, String inkId, String chipId)
+        {
+            HtmlDocument doc = new HtmlDocument();
+            doc.LoadHtml(response);
+
+            var catTableNode = doc.DocumentNode.SelectNodes("//table[@id='dgKatt']");
+
+            // If we got some dogs, save the view state
+            if (catTableNode != null)
+            {
+                ViewStateParser parser = new ViewStateParser();
+                return parser.ParseViewStateGraph(getInputValue(doc, VIEW_STATE), Djurslag.Katt);
+            }
+
+            var list = new AnimalList();
+            list.errorMessage = "No dogs found";
+            return list;
+        }
+
+        /// <summary>
+        /// Search for a specific cat
+        /// </summary>
+        /// <param name="cat"></param>
+        /// <returns></returns>
+        public Animal GetCatDetails(Animal cat)
+        {
+            // Make the request
+            String response = _req.DoSpecCatRequest(cat);
+
+            HtmlDocument doc = new HtmlDocument();
+            doc.LoadHtml(response);
+
+            // TODO validate that we have a relevant page
+            if (doc.DocumentNode != null)
+            {
+                return ParseCat(doc, cat);
+            }
+
+            throw new Exception("Ett fel uppstod när inläsning av katt genomfördes.");
+        }
+
+        /// <summary>
+        /// Parse specific cat response
+        /// </summary>
+        /// <param name="catTableNodes"></param>
+        /// <param name="dog"></param>
+        /// <returns></returns>
+        private Animal ParseCat(HtmlDocument catTableNodes, Animal cat)
+        {
+            var chipNumberNode = catTableNodes.DocumentNode.SelectNodes("//span[@id='lblChipnr']");
+
+            if (chipNumberNode == null)
+            {
+                throw new Exception("Hittade inte katten.");
+            }
+
+            if (chipNumberNode[0].InnerText.Trim() != cat.ChipId)
+            {
+                throw new Exception("Fel katt hittades.");
+            }
+
+            cat.Harlag = getValue(catTableNodes, "lblHarlag");
+
+            cat.Farg = getValue(catTableNodes, "lblFarg");
+
+            var agareTableNodes = catTableNodes.DocumentNode.SelectNodes("//table[@id='ctl00_tblAgare']");
+
+            if (agareTableNodes != null && agareTableNodes[0] != null)
+            {
+                var agareTableNode = agareTableNodes[0];
+
+                var agareRows = agareTableNode.SelectNodes("tr");
+                if (agareRows != null && agareRows.Count > 1)
+                {
+                    // First row
+                    cat.Agare.Namn = agareRows[0].ChildNodes[2].InnerText;
+                    cat.Agare.TelHem = agareRows[0].ChildNodes[5].InnerText;
+                    // Second row
+                    cat.Agare.Adress = agareRows[1].ChildNodes[2].InnerText;
+                    cat.Agare.TelArbete = agareRows[1].ChildNodes[5].InnerText;
+                    // Third row
+                    cat.Agare.Adress += ", " + agareRows[2].ChildNodes[2].InnerText.Replace("&nbps", "");
+                    cat.Agare.TelMobil = agareRows[2].ChildNodes[5].InnerText;
+                }
+                else
+                {
+                    cat.Agare.Namn = "Ingen ägarinformation";
+                }
+            }
+
+            return cat;
+        }
+
+        /// <summary>
+        /// Find the id inside a span
+        /// </summary>
+        /// <param name="dogTableNodes"></param>
+        /// <param name="idToFind"></param>
+        /// <returns></returns>
         private String getValue(HtmlDocument dogTableNodes, String idToFind) {
             var node = dogTableNodes.DocumentNode.SelectNodes("//span[@id='" + idToFind + "']");
             if (node != null && node[0] != null)
@@ -225,6 +265,12 @@ namespace SKKRegisterSok
             return "";
         }
 
+        /// <summary>
+        /// Get value of an input field
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <param name="idToFind"></param>
+        /// <returns></returns>
         private String getInputValue(HtmlDocument doc, String idToFind)
         {
             var metaNode = doc.DocumentNode.SelectNodes("//input[@id='" + idToFind + "']");

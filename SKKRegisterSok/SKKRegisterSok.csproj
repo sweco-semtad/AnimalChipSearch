@@ -47,7 +47,6 @@
     <Compile Include="SKKSearch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Requests.cs" />
-    <Compile Include="ViewState.cs" />
     <Compile Include="ViewStateParser.cs" />
   </ItemGroup>
   <ItemGroup>
