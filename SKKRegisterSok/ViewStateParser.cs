@@ -3,6 +3,7 @@ using System.Collections;
 using System.Text;
 using System.IO;
 using System.Web.UI;
+using SKKSearchAPI;
 
 namespace SKKRegisterSok
 {

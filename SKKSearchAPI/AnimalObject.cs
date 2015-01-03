@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SKKRegisterSok
+namespace SKKSearchAPI
 {
     public enum Djurslag { Katt, Hund }
 
@@ -15,6 +15,7 @@ namespace SKKRegisterSok
         public Djurslag Species { get; set; }
         public String errorMessage { get; set; }
         public ICollection<Animal> animals = new List<Animal>();
+        public bool HasMoreThan20 { get; set; }
     }
 
     public class Animal

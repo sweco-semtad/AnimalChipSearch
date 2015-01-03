@@ -7,11 +7,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using SKKSearchAPI;
 
 namespace SKKRegisterSok
 {
 
-    public class SKKSearch
+    public class SKKSearch : SKKSearchAPI.SKKSearch
     {
         private Requests _req = new Requests();
 
@@ -52,12 +53,16 @@ namespace SKKRegisterSok
             if (dogTableNode != null)
             {
                 ViewStateParser parser = new ViewStateParser();
-                return parser.ParseViewStateGraph(getInputValue(doc, VIEW_STATE), Djurslag.Hund);
+                var list = parser.ParseViewStateGraph(getInputValue(doc, VIEW_STATE), Djurslag.Hund);
+                
+                var next20 = doc.DocumentNode.SelectNodes("//a[@href='javascript:__doPostBack(&#39;dgHund$ctl24$ctl01&#39;,&#39;&#39;)']");
+                if (next20 != null)
+                    list.HasMoreThan20 = true;
+
+                return list;
             }
 
-            var list = new AnimalList();
-            list.errorMessage = "No dogs found";
-            return list;
+            return new AnimalList { errorMessage = ErrorMessages.NoDogsFound };
         }
 
         /// <summary>
@@ -168,12 +173,16 @@ namespace SKKRegisterSok
             if (catTableNode != null)
             {
                 ViewStateParser parser = new ViewStateParser();
-                return parser.ParseViewStateGraph(getInputValue(doc, VIEW_STATE), Djurslag.Katt);
+                var list = parser.ParseViewStateGraph(getInputValue(doc, VIEW_STATE), Djurslag.Katt);
+
+                var next20 = doc.DocumentNode.SelectNodes("//a[@href='javascript:__doPostBack(&#39;dgKatt$ctl24$ctl01&#39;,&#39;&#39;)']");
+                if (next20 != null)
+                    list.HasMoreThan20 = true;
+
+                return list;
             }
 
-            var list = new AnimalList();
-            list.errorMessage = "No dogs found";
-            return list;
+            return new AnimalList { errorMessage = "No cats found" };
         }
 
         /// <summary>

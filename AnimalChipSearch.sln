@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimalChipSearch", "AnimalC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SKKRegisterSok", "SKKRegisterSok\SKKRegisterSok.csproj", "{37DF90F5-943C-4CED-B2CF-5440C10EAC8D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SKKSearchAPI", "SKKSearchAPI\SKKSearchAPI.csproj", "{90C13179-8F6A-436E-B892-81AEC93CC49B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{37DF90F5-943C-4CED-B2CF-5440C10EAC8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37DF90F5-943C-4CED-B2CF-5440C10EAC8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37DF90F5-943C-4CED-B2CF-5440C10EAC8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90C13179-8F6A-436E-B892-81AEC93CC49B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90C13179-8F6A-436E-B892-81AEC93CC49B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90C13179-8F6A-436E-B892-81AEC93CC49B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90C13179-8F6A-436E-B892-81AEC93CC49B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
