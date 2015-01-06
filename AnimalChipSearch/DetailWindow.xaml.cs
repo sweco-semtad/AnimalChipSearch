@@ -41,21 +41,20 @@ namespace AnimalChipSearch
         {
             _animal = animalDetails;
 
-            LblName.Content = animalDetails.Namn;
-            LblRas.Content = animalDetails.Ras;
-            LblFarg.Content = animalDetails.Farg;
-            LblRegnr.Content = animalDetails.RegId;
-            LblChipNr.Content = animalDetails.ChipId;
-            LblTatoo.Content = animalDetails.TatueringsId;
-            LblRas.Content = animalDetails.Ras;
+            txtName.Text = animalDetails.Namn;
+            txtRas.Text = animalDetails.Ras;
+            txtFarg.Text = animalDetails.Farg;
+            txtRegnr.Text = animalDetails.RegId;
+            txtChipNr.Text = animalDetails.ChipId;
+            txtTatoo.Text = animalDetails.TatueringsId;
 
             // Agare
-            LblAgareNamn.Content = animalDetails.Agare.Namn;
-            LblAgareAdress.Content = animalDetails.Agare.Adress;
-            LblAgareEpost.Content = animalDetails.Agare.Epost;
-            LblAgareTelArb.Content = animalDetails.Agare.TelArbete;
-            LblAgareTelHem.Content = animalDetails.Agare.TelHem;
-            LblAgareTelMob.Content = animalDetails.Agare.TelMobil;
+            txtAgareNamn.Text = animalDetails.Agare.Namn;
+            txtAgareAdress.Text = animalDetails.Agare.Adress;
+            txtAgareEpost.Text = animalDetails.Agare.Epost;
+            txtAgareTelArb.Text = animalDetails.Agare.TelArbete;
+            txtAgareTelHem.Text = animalDetails.Agare.TelHem;
+            txtAgareTelMob.Text = animalDetails.Agare.TelMobil;
         }
     }
 }

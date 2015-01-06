@@ -135,6 +135,8 @@ namespace SKKRegisterSok
                 }
             }
 
+            dog.TrimStrings();
+
             return dog;
         }
 

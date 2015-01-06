@@ -42,6 +42,29 @@ namespace SKKSearchAPI
         public Owner Agare { get; set; }
 
         public String linkNum { get; set; }
+
+        /// <summary>
+        /// Remove beginning and trailing spaces and all &nbsp;
+        /// </summary>
+        public void TrimStrings()
+        {
+            TatueringsId = TrimString(TatueringsId);
+            ChipId = TrimString(ChipId);
+            RegId = TrimString(RegId);
+            DbId = TrimString(DbId);
+            Namn = TrimString(Namn);
+            Ras = TrimString(Ras);
+            Harlag = TrimString(Harlag);
+            Farg = TrimString(Farg);
+            Fodelsedatum = TrimString(Fodelsedatum);
+
+            Agare.TrimStrings();
+        }
+
+        private String TrimString(String toTrim)
+        {
+            return toTrim != null ? toTrim.Trim().Replace("&nbsp;", " ") : null;
+        }
     }
 
     public class Owner
@@ -52,5 +75,23 @@ namespace SKKSearchAPI
         public String TelHem { get; set; }
         public String TelArbete { get; set; }
         public String TelMobil { get; set; }
+
+        /// <summary>
+        /// Remove beginning and trailing spaces and all &nbsp;
+        /// </summary>
+        public void TrimStrings()
+        {
+            Namn = TrimString(Namn);
+            Adress = TrimString(Adress);
+            Epost = TrimString(Epost);
+            TelArbete = TrimString(TelArbete);
+            TelHem = TrimString(TelHem);
+            TelMobil = TrimString(TelMobil);
+        }
+
+        private String TrimString(String toTrim)
+        {
+            return toTrim != null ? toTrim.Trim().Replace("&nbsp;", " ") : null;
+        }
     }
 }

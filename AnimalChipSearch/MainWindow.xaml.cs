@@ -87,6 +87,7 @@ namespace AnimalChipSearch
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                EnableUI();
             }
         }
 
@@ -113,6 +114,7 @@ namespace AnimalChipSearch
             catch (Exception exc)
             {
                 System.Windows.MessageBox.Show(exc.Message);
+                EnableUI();
             }
         }
 

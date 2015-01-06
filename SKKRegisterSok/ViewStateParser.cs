@@ -64,6 +64,8 @@ namespace SKKRegisterSok
 
                     animal.Species = Djurslag.Hund;
 
+                    animal.TrimStrings();
+
                     animalList.animals.Add(animal);
                 }
             }
