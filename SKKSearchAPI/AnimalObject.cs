@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SKKSearchAPI
 {
-    public enum Djurslag { Katt, Hund }
+    public enum Djurslag { Katt , Hund }
 
     public enum Kon { Hund = 0, Tik = 1, Hane = 2, Hona = 3 }
 

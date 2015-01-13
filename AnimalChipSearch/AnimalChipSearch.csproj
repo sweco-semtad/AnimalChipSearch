@@ -57,6 +57,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ViewModels\DetailsViewModel.cs" />
+    <Compile Include="ViewModels\DjurslagViewModel.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\MvvmMessageBoxEventArgs.cs" />
+    <Compile Include="ViewModels\RelayCommand.cs" />
+    <Compile Include="ViewModels\SearchListViewModel.cs" />
+    <Compile Include="ViewModels\ViewModeBase.cs" />
     <Page Include="DetailWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
