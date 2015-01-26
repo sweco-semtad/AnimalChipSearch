@@ -2,7 +2,19 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:AnimalChipSearch.ViewModels"
+        xmlns:localViews="clr-namespace:AnimalChipSearch.Views"
         Title="Sök efter hundar eller katter" MinWidth="650" Width="650" MinHeight="400" Height="400" SizeToContent="Height">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type local:DetailsViewModel}">
+            <localViews:DetailsView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type local:SearchListViewModel}">
+            <localViews:SearchList />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type local:EmptyControlViewModel}">
+            <localViews:Empty />
+        </DataTemplate>
+    </Window.Resources>
     <Grid Margin="5,5,5,5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -44,37 +56,14 @@
                       FontSize="23"  Grid.Row="2" Grid.Column="1"
                       ItemsSource="{Binding DjurslagList}" SelectedItem="{Binding SelectedDjurslag, Mode=TwoWay}" IsSynchronizedWithCurrentItem="True" DisplayMemberPath="Name"
                        IsEnabled="{Binding IsUIEnabled}"/>
-                <!--<ComboBoxItem IsSelected="True" Name="Hund">Hund</ComboBoxItem>
-                <ComboBoxItem Name="Katt">Katt</ComboBoxItem>
-            </ComboBox>-->
 
             <Button x:Name="SearchButton" Content="Sök" Command="{Binding InitSearchCommand}" IsEnabled="{Binding IsUIEnabled}"
                     Margin="10,0,0,0" FontSize="23" Grid.Row="0" Grid.Column="2" Grid.RowSpan="3"/>
         </Grid>
-            <!--<Grid Margin="0,10,0,0" Grid.Row="1">
-                --><!--<Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>--><!--
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>-->
-            <ListView x:Name="resultList" HorizontalAlignment="Stretch"  Grid.Column="0" Grid.Row="1" Margin="0,10,0,0"
-                      ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"
-                      ItemsSource="{Binding AnimalsList}" IsEnabled="{Binding IsUIEnabled}">
-                <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="Namn" DisplayMemberBinding="{Binding Namn}" Width="250" />
-                            <GridViewColumn Header="Ras" DisplayMemberBinding="{Binding Ras}" Width="160"/>
-                            <GridViewColumn Header="Kön" DisplayMemberBinding="{Binding Kon}" Width="50"/>
-                            <GridViewColumn Header="Reg#" DisplayMemberBinding="{Binding RegId}" Width="120"/>
-                        </GridView>
-                    </ListView.View>
-                    <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <EventSetter Event="MouseDoubleClick" Handler="ListViewItemDoubleClick" />
-                </Style>
-                    </ListView.ItemContainerStyle>
-                </ListView>
-            <!--</Grid>-->
+        
+        <Grid Margin="0,10" Grid.Row="1" >
+            <ContentControl Content="{Binding CurrentView}" />
+        </Grid>
+        
     </Grid>
 </Window>

@@ -39,6 +39,11 @@ namespace AnimalChipSearch.ViewModels
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
+        protected String GetString(String name)
+        {
+            return (string)Application.Current.FindResource(name);
+        }
         #endregion
     }
 }

@@ -29,12 +29,5 @@ namespace AnimalChipSearch
         {
             e.Show();
         }
-
-        public void ListViewItemDoubleClick(object sender, RoutedEventArgs e)
-        {
-            var item = sender as ListViewItem;
-            var animal = (Animal)item.DataContext;
-            _viewModel.ListViewItemDoubleClick(animal);
-        }
     }
 }

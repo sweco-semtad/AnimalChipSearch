@@ -59,11 +59,21 @@
     </ApplicationDefinition>
     <Compile Include="ViewModels\DetailsViewModel.cs" />
     <Compile Include="ViewModels\DjurslagViewModel.cs" />
+    <Compile Include="ViewModels\EmptyControlViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\MvvmMessageBoxEventArgs.cs" />
     <Compile Include="ViewModels\RelayCommand.cs" />
     <Compile Include="ViewModels\SearchListViewModel.cs" />
     <Compile Include="ViewModels\ViewModeBase.cs" />
+    <Compile Include="Views\DetailsView.xaml.cs">
+      <DependentUpon>DetailsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Empty.xaml.cs">
+      <DependentUpon>Empty.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SearchList.xaml.cs">
+      <DependentUpon>SearchList.xaml</DependentUpon>
+    </Compile>
     <Page Include="DetailWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -84,6 +94,18 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Strings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DetailsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Empty.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SearchList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

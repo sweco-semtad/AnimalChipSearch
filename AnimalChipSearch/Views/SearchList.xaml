@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="AnimalChipSearch.Views.SearchList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d">
+    <ListView x:Name="resultList" HorizontalAlignment="Stretch"  Grid.Column="0" Grid.Row="1" Margin="0,10,0,0"
+                      ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"
+                      ItemsSource="{Binding AnimalsList}" IsEnabled="{Binding IsUIEnabled}">
+        <ListView.View>
+            <GridView>
+                <GridViewColumn Header="Namn" DisplayMemberBinding="{Binding Namn}" Width="250" />
+                <GridViewColumn Header="Ras" DisplayMemberBinding="{Binding Ras}" Width="160"/>
+                <GridViewColumn Header="Kön" DisplayMemberBinding="{Binding Kon}" Width="50"/>
+                <GridViewColumn Header="Reg#" DisplayMemberBinding="{Binding RegId}" Width="120"/>
+            </GridView>
+        </ListView.View>
+        <ListView.ItemContainerStyle>
+            <Style TargetType="ListViewItem">
+                <EventSetter Event="MouseDoubleClick" Handler="ListViewItemDoubleClick" />
+            </Style>
+        </ListView.ItemContainerStyle>
+    </ListView>
+</UserControl>

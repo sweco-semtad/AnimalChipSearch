@@ -154,3 +154,5 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+/packages/HtmlAgilityPack.1.4.9
+/packages/Newtonsoft.Json.6.0.6

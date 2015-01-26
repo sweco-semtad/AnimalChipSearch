@@ -5,5 +5,10 @@
     <system:String x:Key="moreThan20">Din sökning gav fler än 20 träffar. Enbart de 20 första visas.</system:String>
     <system:String x:Key="ingaHundar">Inga hundar hittades med matchande ID.</system:String>
     <system:String x:Key="ingaKatter">Inga katter hittades med matchande ID.</system:String>
+    <system:String x:Key="okäntFel">Okänt fel inträffade.</system:String>
+    
+    <system:String x:Key="info">Fyll i rutan för chip-id eller tatuerings-id och tryck på knappen Sök. Om tatueringen är otydlig kan du använda # istället för det/de otydliga tecknen.</system:String>
+    
+    
     
 </ResourceDictionary>
