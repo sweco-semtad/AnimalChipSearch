@@ -20,9 +20,9 @@ namespace AnimalChipSearch.Views
     /// <summary>
     /// Interaction logic for DetailsView.xaml
     /// </summary>
-    public partial class DetailsView : UserControl
+    public partial class CatView : UserControl
     {
-        public DetailsView()
+        public CatView()
         {
             InitializeComponent();
         }

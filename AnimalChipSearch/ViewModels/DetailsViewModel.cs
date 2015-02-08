@@ -2,17 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Input;
 using System.Threading.Tasks;
 using SKKSearchAPI;
 using SKKRegisterSok;
 
 namespace AnimalChipSearch.ViewModels
 {
-    public class DetailsViewModel : ViewModelBase
+    public class AnimalViewModel : ViewModelBase
     {
-        private MainWindowViewModel _mainViewModel;
+        protected MainWindowViewModel _mainViewModel;
 
-        public DetailsViewModel(MainWindowViewModel mainViewModel)
+        protected AnimalViewModel()
+        {
+        }
+
+        public AnimalViewModel(MainWindowViewModel mainViewModel)
         {
             _mainViewModel = mainViewModel;
         }
@@ -120,7 +125,7 @@ namespace AnimalChipSearch.ViewModels
 
         public String Saknad
         {
-            get { return _animal.Saknad ? "Ja" : "Nej"; }
+            get { return _animal != null && _animal.Saknad ? "Ja" : "Nej"; }
         }
 
         public String Harlag
@@ -140,7 +145,7 @@ namespace AnimalChipSearch.ViewModels
 
         public String Kastrerad
         {
-            get { return _animal.Kastrerad ? "Ja" : "Nej"; }
+            get { return _animal != null && _animal.Kastrerad ? "Ja" : "Nej"; }
         }
 
         public String linkNum
@@ -177,5 +182,20 @@ namespace AnimalChipSearch.ViewModels
         {
             get { return _animal != null ? _animal.Agare.TelMobil : "-"; }
         }
+
+        #region Commands
+        void BackToList()
+        {
+            _mainViewModel.ShowList();
+        }
+
+        bool CanExecuteSearch()
+        {
+            return true;
+        }
+
+        public ICommand BackToListCommand { get { return new RelayCommand(BackToList, CanExecuteSearch); } }
+
+        #endregion
     }
 }

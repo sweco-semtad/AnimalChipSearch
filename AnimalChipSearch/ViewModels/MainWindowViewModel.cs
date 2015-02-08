@@ -28,7 +28,9 @@ namespace AnimalChipSearch.ViewModels
 
         public SearchListViewModel SearchListViewModel { get; set; }
 
-        public DetailsViewModel DetailsViewModel { get; set; }
+        public DogViewModel DogViewModel { get; set; }
+
+        public CatViewModel CatViewModel { get; set; }
 
         public EmptyControlViewModel EmptyControlViewModel { get; set; }
 
@@ -60,7 +62,8 @@ namespace AnimalChipSearch.ViewModels
             // Create view models
             SearchListViewModel = new SearchListViewModel(this);
             EmptyControlViewModel = new EmptyControlViewModel { Text = GetString("info") };
-            DetailsViewModel = new DetailsViewModel(this);
+            DogViewModel = new DogViewModel(this);
+            CatViewModel = new CatViewModel(this);
 
             // Set the current view
             CurrentView = EmptyControlViewModel;
@@ -134,7 +137,11 @@ namespace AnimalChipSearch.ViewModels
                 {
                     // We got a result list, lets show it
                     SearchListViewModel.Update(responseObject);
-                    CurrentView = SearchListViewModel;
+
+                    if (responseObject.animals.Count == 1)
+                        AnimalDoubleCkick(responseObject.animals.First());
+                    else
+                        CurrentView = SearchListViewModel;
                 }
 
                 EnableUI();
@@ -146,10 +153,20 @@ namespace AnimalChipSearch.ViewModels
             }
         }
 
+        public void ShowList()
+        {
+            CurrentView = SearchListViewModel;
+        }
+
         public void AnimalDoubleCkick(Animal animal)
         {
             GetDetails(animal);
-            CurrentView = DetailsViewModel;
+            // Cat or dog?
+            if (animal.Species == Djurslag.Hund)
+                CurrentView = DogViewModel;
+            else
+                CurrentView = CatViewModel;
+            
         }
 
         public async void GetDetails(Animal animal)
@@ -157,11 +174,15 @@ namespace AnimalChipSearch.ViewModels
             await Task.Run(() =>
             {
                 if (animal.Species == Djurslag.Hund)
+                {
                     animal = skkSearch.GetDogDetails(animal);
+                    DogViewModel.Animal = animal;
+                }
                 else
+                {
                     animal = skkSearch.GetCatDetails(animal);
-
-                DetailsViewModel.Animal = animal;
+                    CatViewModel.Animal = animal;
+                }
             });
         }
 

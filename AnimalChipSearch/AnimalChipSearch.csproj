@@ -57,16 +57,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ViewModels\CatViewModel.cs" />
     <Compile Include="ViewModels\DetailsViewModel.cs" />
     <Compile Include="ViewModels\DjurslagViewModel.cs" />
+    <Compile Include="ViewModels\DogViewModel.cs" />
     <Compile Include="ViewModels\EmptyControlViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\MvvmMessageBoxEventArgs.cs" />
     <Compile Include="ViewModels\RelayCommand.cs" />
     <Compile Include="ViewModels\SearchListViewModel.cs" />
     <Compile Include="ViewModels\ViewModeBase.cs" />
-    <Compile Include="Views\DetailsView.xaml.cs">
-      <DependentUpon>DetailsView.xaml</DependentUpon>
+    <Compile Include="Views\CatView.xaml.cs">
+      <DependentUpon>CatView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Empty.xaml.cs">
       <DependentUpon>Empty.xaml</DependentUpon>
@@ -74,10 +76,9 @@
     <Compile Include="Views\SearchList.xaml.cs">
       <DependentUpon>SearchList.xaml</DependentUpon>
     </Compile>
-    <Page Include="DetailWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <Compile Include="Views\DogView.xaml.cs">
+      <DependentUpon>DogView.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -85,9 +86,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DetailWindow.xaml.cs">
-      <DependentUpon>DetailWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -97,15 +95,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\DetailsView.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Views\CatView.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Empty.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SearchList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
