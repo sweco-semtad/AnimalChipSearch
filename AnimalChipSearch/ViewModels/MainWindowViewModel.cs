@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 using SKKSearchAPI;
 using System.Windows.Input;
 using System.Windows;
+using com.kit.RfidUsbLib;
 
 namespace AnimalChipSearch.ViewModels
 {
-    public class MainWindowViewModel : ViewModelBase
+    public class MainWindowViewModel : ViewModelBase, RFIDChipIdReceiver
     {
         SKKRegisterSok.SKKSearch skkSearch = new SKKRegisterSok.SKKSearch();
 
@@ -67,6 +68,8 @@ namespace AnimalChipSearch.ViewModels
 
             // Set the current view
             CurrentView = EmptyControlViewModel;
+
+            UsbReaderWriter usb = UsbReaderWriter.Instance;
         }
 
         private DjurslagViewModel _selectedDjurslag;
@@ -184,6 +187,15 @@ namespace AnimalChipSearch.ViewModels
                     CatViewModel.Animal = animal;
                 }
             });
+        }
+
+        /// <summary>
+        /// Received chip number read by RFID reader
+        /// </summary>
+        /// <param name="chipId"></param>
+        public void ChipIdRead(String chipId)
+        {
+            MessageBox_Show(null, "Chip read: " + chipId, "ChipId", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.None);
         }
 
         private void DisableUI()

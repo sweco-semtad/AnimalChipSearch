@@ -1,0 +1,119 @@
+﻿<UserControl x:Class="AnimalChipSearch.Views.CatView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+              d:DesignWidth="300" Background="White">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type Paragraph}">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontFamily" Value="Lucida Sans Unicode" />
+        </Style>
+        <Style x:Key="hugeText" TargetType="Run">
+            <Setter Property="FontSize" Value="30" />
+        </Style>
+        <Style x:Key="largeText" TargetType="Paragraph">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontFamily" Value="Lucida Sans Unicode" />
+        </Style>
+        <Style x:Key="mediumText" TargetType="Paragraph">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontFamily" Value="Lucida Sans Unicode" />
+        </Style>
+        <Style x:Key="smallText" TargetType="Paragraph">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontFamily" Value="Lucida Sans Unicode" />
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Button Grid.Row="0"
+            Content="Tillbaka till listan" HorizontalAlignment="Center"  Width="150" Margin="0,10,0,10" Command="{Binding BackToListCommand}"/>
+        <FlowDocumentScrollViewer Grid.Row="1">
+            <FlowDocument LineHeight="12">
+                <Paragraph>
+                    <Run Text="{Binding Namn, Mode=OneWay}" Style="{StaticResource ResourceKey=hugeText}"/>
+                </Paragraph>
+                <Paragraph>
+                    RegId:
+                    <Run Text="{Binding RegId, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph>
+                    ChipId:
+                    <Run Text="{Binding ChipId, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph>
+                    TatueringsId:
+                    <Run Text="{Binding TatueringsId, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph>
+                    Födelsedatum:
+                    <Run Text="{Binding Fodelseår, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph>
+                    ID-märkningsår:
+                    <!-- TODO -->
+                </Paragraph>
+                <Paragraph>
+                    Ras:
+                    <Run Text="{Binding Ras, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph>
+                    Kön:
+                    <Run Text="{Binding Kon, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph>
+                    Kastrerad:
+                    <Run Text="{Binding Kastrerad, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph>
+                    Hårlag:
+                    <Run Text="{Binding Harlag, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph>
+                    Färg:
+                    <Run Text="{Binding Farg, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph>
+                    Anmäld saknad:
+                    <Run Text="{Binding Saknad, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Style="{StaticResource ResourceKey=largeText}">
+                    Ägare
+                </Paragraph>
+                <Paragraph Style="{StaticResource ResourceKey=mediumText}">
+                    <Run Text="{Binding OwnerNamn, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph>
+                    Adress:
+                    <Run Text="{Binding OwnerAdress, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph>
+                    Epost:
+                    <Run Text="{Binding OwnerEpost, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph>
+                    Tel hem:
+                    <Run Text="{Binding OwnerTelHem, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph>
+                    Tel arbete:
+                    <Run Text="{Binding OwnerTelArbete, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph>
+                    Tel mobil:
+                    <Run Text="{Binding OwnerTelMobil, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Style="{StaticResource smallText}">
+                    Uppgifterna är hämtade från SKKs register. Länk till sidan: [länk]
+                </Paragraph>
+            </FlowDocument>
+        </FlowDocumentScrollViewer>
+    </Grid>
+</UserControl>

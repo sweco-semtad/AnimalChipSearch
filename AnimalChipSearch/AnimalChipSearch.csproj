@@ -141,6 +141,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\RfidUsbLib\RfidUsbLib.csproj">
+      <Project>{ef33a099-fda2-4b5b-8089-94f7761a2132}</Project>
+      <Name>RfidUsbLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SKKRegisterSok\SKKRegisterSok.csproj">
       <Project>{37df90f5-943c-4ced-b2cf-5440c10eac8d}</Project>
       <Name>SKKRegisterSok</Name>
