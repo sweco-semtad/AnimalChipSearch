@@ -2,8 +2,10 @@
 using System.IO;
 using System.IO.Ports;
 using System.Management;
-using LibUsbDotNet;
+using System.Threading;
 using System.Collections.ObjectModel;
+
+using LibUsbDotNet;
 using LibUsbDotNet.Main;
 using LibUsbDotNet.Info;
 using LibUsbDotNet.DeviceNotify;
@@ -19,27 +21,15 @@ namespace com.kit.RfidUsbLib
 
         private bool _deviceConnected = false;
 
+        //AutoResetEvent _waitHandle = new AutoResetEvent(false);
+
         private RFIDChipIdReceiver _receiver;
         public RFIDChipIdReceiver Receiver { set { _receiver = value;} }
 
         /// <summary>
-        /// Singleton instance
+        /// Init the object
         /// </summary>
-        private static UsbReaderWriter _instance;
-        public static UsbReaderWriter Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = new UsbReaderWriter();
-                return _instance;
-            }
-        }
-
-        /// <summary>
-        /// Private constructor
-        /// </summary>
-        private UsbReaderWriter()
+        public void Init()
         {
             // Hook the device notifier event
             UsbDeviceNotifier.OnDeviceNotify += OnDeviceNotifyEvent;
@@ -48,6 +38,13 @@ namespace com.kit.RfidUsbLib
             {
                 ConnectToDevice();
             }
+
+            // Infinite loop
+            //while (true)
+            //{
+            //    // Wait for event completion
+            //    _waitHandle.WaitOne();
+            //}
         }
 
         /// <summary>
@@ -155,7 +152,7 @@ namespace com.kit.RfidUsbLib
         private void OnDeviceNotifyEvent(object sender, DeviceNotifyEventArgs e)
         {
             // A Device system-level event has occured
-            if (Instance.IsThisRFIDReader(e.Device.IdVendor, e.Device.IdProduct))
+            if (IsThisRFIDReader(e.Device.IdVendor, e.Device.IdProduct))
             {
                 if (e.EventType == EventType.DeviceArrival)
                 {
@@ -193,6 +190,18 @@ namespace com.kit.RfidUsbLib
                 _serialPort.Close();
 
             _deviceConnected = false;
+        }
+
+        public void Dispose()
+        {
+            // Close connections
+            DeviceDisconnected();
+
+            // Unregister for USB events
+            UsbDeviceNotifier.OnDeviceNotify -= OnDeviceNotifyEvent;
+
+            // Suppress finalization.
+            GC.SuppressFinalize(this);
         }
     }
 

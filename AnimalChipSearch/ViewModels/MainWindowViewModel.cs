@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using SKKSearchAPI;
 using System.Windows.Input;
@@ -15,6 +16,8 @@ namespace AnimalChipSearch.ViewModels
     public class MainWindowViewModel : ViewModelBase, RFIDChipIdReceiver
     {
         SKKRegisterSok.SKKSearch skkSearch = new SKKRegisterSok.SKKSearch();
+
+        //Thread _usbBgThread;
 
         private ViewModelBase _currentView;
         public ViewModelBase CurrentView
@@ -69,7 +72,12 @@ namespace AnimalChipSearch.ViewModels
             // Set the current view
             CurrentView = EmptyControlViewModel;
 
-            UsbReaderWriter usb = UsbReaderWriter.Instance;
+            // Start the USB thread
+            UsbReaderWriter usbBgObject = new UsbReaderWriter();
+            usbBgObject.Init();
+
+            //_usbBgThread = new Thread(new ThreadStart(usbBgObject.Init));
+            //_usbBgThread.Start();
         }
 
         private DjurslagViewModel _selectedDjurslag;
@@ -223,5 +231,12 @@ namespace AnimalChipSearch.ViewModels
 
         #endregion
 
+        public void Dispose()
+        {
+            //_usbBgThread.Abort();
+            //_usbBgThread.Join();
+            // Suppress finalization.
+            GC.SuppressFinalize(this);
+        }
     }
 }
