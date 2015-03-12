@@ -6,8 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+//using System.Management;
 using SKKSearchAPI;
 using System.Windows.Input;
+using System.Windows.Threading;
 using System.Windows;
 using com.kit.RfidUsbLib;
 
@@ -53,8 +55,12 @@ namespace AnimalChipSearch.ViewModels
             }
         }
 
-        public MainWindowViewModel()
-        {
+        private UsbReaderWriter _usbBgObject;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public MainWindowViewModel() {
             // Initialize the combobox for djurslag
             DjurslagList = new ObservableCollection<DjurslagViewModel>();
             DjurslagList.Add(new DjurslagViewModel { Djurslag = Djurslag.Hund });
@@ -72,12 +78,11 @@ namespace AnimalChipSearch.ViewModels
             // Set the current view
             CurrentView = EmptyControlViewModel;
 
-            // Start the USB thread
-            UsbReaderWriter usbBgObject = new UsbReaderWriter();
-            usbBgObject.Init();
+            // Initialize the USB RFID object
+            _usbBgObject = new UsbReaderWriter(this);
 
-            //_usbBgThread = new Thread(new ThreadStart(usbBgObject.Init));
-            //_usbBgThread.Start();
+            // Listen for shutdown event
+            Application.Current.Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
         }
 
         private DjurslagViewModel _selectedDjurslag;
@@ -203,7 +208,19 @@ namespace AnimalChipSearch.ViewModels
         /// <param name="chipId"></param>
         public void ChipIdRead(String chipId)
         {
-            MessageBox_Show(null, "Chip read: " + chipId, "ChipId", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.None);
+            TxtbChipId = chipId;
+            RaisePropertyChanged("TxtbChipId");
+            SearchAnimals();
+        }
+
+        public void DeviceConnectionEvent(bool deviceConnected)
+        {
+            MessageBox_Show(null, "Device connection change: " + deviceConnected, "ChipId", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.None);
+        }
+
+        public void ReadError(string message)
+        {
+            MessageBox_Show(null, "Läsfel: " + message, "ChipId", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.None);
         }
 
         private void DisableUI()
@@ -231,10 +248,16 @@ namespace AnimalChipSearch.ViewModels
 
         #endregion
 
+        private void Dispatcher_ShutdownStarted(object sender, EventArgs e)
+        {
+            Dispose();
+        }
+
         public void Dispose()
         {
-            //_usbBgThread.Abort();
-            //_usbBgThread.Join();
+            if (_usbBgObject != null)
+                _usbBgObject.Dispose();
+
             // Suppress finalization.
             GC.SuppressFinalize(this);
         }

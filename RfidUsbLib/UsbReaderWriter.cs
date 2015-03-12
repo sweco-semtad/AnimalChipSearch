@@ -2,8 +2,12 @@
 using System.IO;
 using System.IO.Ports;
 using System.Management;
-using System.Threading;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows;
+using System.Windows.Threading;
+using System.Threading;
+using System.Threading.Tasks;
 
 using LibUsbDotNet;
 using LibUsbDotNet.Main;
@@ -21,64 +25,37 @@ namespace com.kit.RfidUsbLib
 
         private bool _deviceConnected = false;
 
-        //AutoResetEvent _waitHandle = new AutoResetEvent(false);
+        private string _chipId;
 
         private RFIDChipIdReceiver _receiver;
-        public RFIDChipIdReceiver Receiver { set { _receiver = value;} }
 
         /// <summary>
-        /// Init the object
+        /// Constructor
         /// </summary>
-        public void Init()
+        public UsbReaderWriter(RFIDChipIdReceiver receiver)
         {
+            _receiver = receiver;
+
             // Hook the device notifier event
             UsbDeviceNotifier.OnDeviceNotify += OnDeviceNotifyEvent;
 
             if (IsRFIDReaderConnected())
             {
-                ConnectToDevice();
-            }
+                String portName = GetPortNameAsync();
 
-            // Infinite loop
-            //while (true)
-            //{
-            //    // Wait for event completion
-            //    _waitHandle.WaitOne();
-            //}
+                if (portName != null)
+                    ConnectToDevice(portName);
+            }
         }
 
         /// <summary>
         /// Connect to device
         /// </summary>
         /// <param name="portName"></param>
-        private void ConnectToDevice(String portName = null)
+        public void ConnectToDevice(String portName)
         {
             // Create a new SerialPort object with default settings.
             _serialPort = new SerialPort();
-
-            if (portName == null)
-            {
-                try
-                {
-                    ManagementObjectSearcher searcher =
-                        new ManagementObjectSearcher("root\\WMI",
-                        "SELECT * FROM MSSerial_PortName");
-
-                    foreach (ManagementObject queryObj in searcher.Get())
-                    {
-                        //If the serial port's instance name contains USB 
-                        //it must be a USB to serial device
-                        if (queryObj["InstanceName"].ToString().Contains("FTDI"))
-                        {
-                            portName = queryObj["PortName"].ToString();
-                        }
-                    }
-                }
-                catch (ManagementException e)
-                {
-                    throw new Exception("An error occurred while querying for WMI data", e);
-                }
-            }
 
             if (portName == null)
             {
@@ -102,19 +79,85 @@ namespace com.kit.RfidUsbLib
             _serialPort.Open();
 
             _deviceConnected = true;
+
+            if (_receiver != null)
+            {
+                _receiver.DeviceConnectionEvent(_deviceConnected);
+            }
+        }
+
+        private string GetPortNameAsync()
+        {
+            String portName = null;
+            Task t = Task.Run(() =>
+            {
+                try
+                {
+                    //WMISearcher.Options.ReturnImmediately = True
+                    ManagementObjectSearcher searcher =
+                        new ManagementObjectSearcher("root\\WMI",
+                        "SELECT * FROM MSSerial_PortName");
+                    searcher.Options.ReturnImmediately = false;
+
+                    foreach (ManagementObject queryObj in searcher.Get())
+                    {
+                        //If the serial port's instance name contains USB 
+                        //it must be a USB to serial device
+                        if (queryObj["InstanceName"].ToString().Contains("FTDI"))
+                        {
+                            portName = queryObj["PortName"].ToString();
+                        }
+                    }
+                }
+                catch (ManagementException e)
+                {
+                    //throw new Exception("An error occurred while querying for WMI data", e);
+                }
+            });
+            t.Wait();
+            return portName;
         }
 
         /// <summary>
-        /// Data received from RFID device
+        /// Data received from RFID device.
+        /// Sometimes we get more than one event and the chip id is
+        /// broken up between the events.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void DataReceivedHandler(object sender,SerialDataReceivedEventArgs e) {
+        private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e) {
             SerialPort sp = (SerialPort)sender;
             string indata = sp.ReadExisting();
-            // TODO event for data recieved
-            if (_receiver != null)
-                _receiver.ChipIdRead(indata);
+
+            if (indata.Contains("\r"))
+            {
+                if (!string.IsNullOrEmpty(_chipId))
+                    _chipId += indata.Replace("\r", "");
+                else
+                    _chipId = indata.Replace("\r", "");
+
+                if (_receiver != null)
+                {
+                    //var countryCode = _chipId.Substring(0, 3);
+                    //if (countryCode != "941" && _receiver != null)
+                    //{
+                    //    _receiver.ReadError("Chipet har en landskod som inte är Svensk. (" + countryCode + ")");
+                    //    return;
+                    //}
+
+                    // Remove the countrycode
+                    var chipId = _chipId.Replace("_", "");
+                    // Notify the receiver
+                    _receiver.ChipIdRead(chipId);
+                }
+
+                // Reset the id
+                _chipId = string.Empty;
+            }
+            else
+            {
+                _chipId += indata;
+            }
         }
 
         /// <summary>
@@ -156,11 +199,14 @@ namespace com.kit.RfidUsbLib
             {
                 if (e.EventType == EventType.DeviceArrival)
                 {
-                    ConnectToDevice(e.Port.Name);
+                    String portName = GetPortNameAsync();
+
+                    if (portName != null)
+                        ConnectToDevice(portName);
                 }
                 else if (e.EventType == EventType.DeviceRemoveComplete)
                 {
-                    DeviceDisconnected();
+                    DeviceDisconnecting();
                 }
             }
         }
@@ -182,20 +228,26 @@ namespace com.kit.RfidUsbLib
         }
 
         /// <summary>
-        /// Device is disconnected. Hous cleaning
+        /// Device is disconnected. House cleaning
         /// </summary>
-        private void DeviceDisconnected()
+        private void DeviceDisconnecting()
         {
             if (_serialPort != null)
                 _serialPort.Close();
 
             _deviceConnected = false;
+
+            // Notify the reciever
+            if (_receiver != null)
+            {
+                _receiver.DeviceConnectionEvent(_deviceConnected);
+            }
         }
 
         public void Dispose()
         {
             // Close connections
-            DeviceDisconnected();
+            DeviceDisconnecting();
 
             // Unregister for USB events
             UsbDeviceNotifier.OnDeviceNotify -= OnDeviceNotifyEvent;
@@ -208,5 +260,9 @@ namespace com.kit.RfidUsbLib
     public interface RFIDChipIdReceiver
     {
         void ChipIdRead(String chipId);
+
+        void DeviceConnectionEvent(bool deviceConnected);
+
+        void ReadError(string message);
     }
 }
