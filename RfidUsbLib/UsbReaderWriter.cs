@@ -109,55 +109,13 @@ namespace com.kit.RfidUsbLib
                         }
                     }
                 }
-                catch (ManagementException e)
+                catch (ManagementException)
                 {
                     //throw new Exception("An error occurred while querying for WMI data", e);
                 }
             });
             t.Wait();
             return portName;
-        }
-
-        /// <summary>
-        /// Data received from RFID device.
-        /// Sometimes we get more than one event and the chip id is
-        /// broken up between the events.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e) {
-            SerialPort sp = (SerialPort)sender;
-            string indata = sp.ReadExisting();
-
-            if (indata.Contains("\r"))
-            {
-                if (!string.IsNullOrEmpty(_chipId))
-                    _chipId += indata.Replace("\r", "");
-                else
-                    _chipId = indata.Replace("\r", "");
-
-                if (_receiver != null)
-                {
-                    //var countryCode = _chipId.Substring(0, 3);
-                    //if (countryCode != "941" && _receiver != null)
-                    //{
-                    //    _receiver.ReadError("Chipet har en landskod som inte är Svensk. (" + countryCode + ")");
-                    //    return;
-                    //}
-
-                    // Remove the countrycode
-                    var chipId = _chipId.Replace("_", "");
-                    // Notify the receiver
-                    _receiver.ChipIdRead(chipId);
-                }
-
-                // Reset the id
-                _chipId = string.Empty;
-            }
-            else
-            {
-                _chipId += indata;
-            }
         }
 
         /// <summary>
@@ -185,30 +143,6 @@ namespace com.kit.RfidUsbLib
         private bool IsThisRFIDReader(int vendorId, int productId)
         {
             return vendorId == 1027 && productId == 24577;
-        }
-
-        /// <summary>
-        /// Event fired when USB devices are disconnected and connected
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnDeviceNotifyEvent(object sender, DeviceNotifyEventArgs e)
-        {
-            // A Device system-level event has occured
-            if (IsThisRFIDReader(e.Device.IdVendor, e.Device.IdProduct))
-            {
-                if (e.EventType == EventType.DeviceArrival)
-                {
-                    String portName = GetPortNameAsync();
-
-                    if (portName != null)
-                        ConnectToDevice(portName);
-                }
-                else if (e.EventType == EventType.DeviceRemoveComplete)
-                {
-                    DeviceDisconnecting();
-                }
-            }
         }
 
         /// <summary>
@@ -244,6 +178,70 @@ namespace com.kit.RfidUsbLib
             }
         }
 
+        #region eventhandlers
+
+        /// <summary>
+        /// Event fired when USB devices are disconnected and connected
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnDeviceNotifyEvent(object sender, DeviceNotifyEventArgs e)
+        {
+            // A Device system-level event has occured
+            if (IsThisRFIDReader(e.Device.IdVendor, e.Device.IdProduct))
+            {
+                if (e.EventType == EventType.DeviceArrival)
+                {
+                    String portName = GetPortNameAsync();
+
+                    if (portName != null)
+                        ConnectToDevice(portName);
+                }
+                else if (e.EventType == EventType.DeviceRemoveComplete)
+                {
+                    DeviceDisconnecting();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Data received from RFID device.
+        /// Sometimes we get more than one event and the chip id is
+        /// broken up between the events.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
+        {
+            SerialPort sp = (SerialPort)sender;
+            string indata = sp.ReadExisting();
+
+            if (indata.Contains("\r"))
+            {
+                if (!string.IsNullOrEmpty(_chipId))
+                    _chipId += indata.Replace("\r", "");
+                else
+                    _chipId = indata.Replace("\r", "");
+
+                if (_receiver != null)
+                {
+                    // Remove the _ that separates the countrycode and chip id
+                    var chipId = _chipId.Replace("_", "");
+                    // Notify the receiver
+                    _receiver.ChipIdRead(chipId);
+                }
+
+                // Reset the id
+                _chipId = string.Empty;
+            }
+            else
+            {
+                _chipId += indata;
+            }
+        }
+
+        #endregion
+
         public void Dispose()
         {
             // Close connections
@@ -257,6 +255,9 @@ namespace com.kit.RfidUsbLib
         }
     }
 
+    /// <summary>
+    /// Interface for communicating with the creator object
+    /// </summary>
     public interface RFIDChipIdReceiver
     {
         void ChipIdRead(String chipId);

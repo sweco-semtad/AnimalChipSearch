@@ -21,16 +21,19 @@ namespace SKKRegisterSok
         /// <summary>
         /// Search dogs
         /// </summary>
-        /// <param name="inkId"></param>
-        /// <param name="chiId"></param>
+        /// <param name="idMode"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public AnimalList SearchDogs(String inkId, String chiId)
+        public AnimalList SearchDogs(IdModell idMode, String id)
         {
-            String response = _req.DoDogRequest(inkId, chiId);
+            string chipId = idMode == IdModell.Chip ? id : "";
+            string inkId = idMode == IdModell.Tatuering ? id : "";
+
+            String response = _req.DoDogRequest(inkId, chipId);
 
             if (response != String.Empty)
             {
-                return ParseDogs(response, inkId, chiId);
+                return ParseDogs(response, inkId, id);
             }
             throw new Exception("Empty response");
         }
@@ -143,16 +146,19 @@ namespace SKKRegisterSok
         /// <summary>
         /// Search cats
         /// </summary>
-        /// <param name="inkId"></param>
-        /// <param name="chiId"></param>
+        /// <param name="idMode"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public AnimalList SearchCats(String inkId, String chiId)
+        public AnimalList SearchCats(IdModell idMode, String id)
         {
-            String response = _req.DoCatRequest(inkId, chiId);
+            string chipId = idMode == IdModell.Chip ? id : "";
+            string inkId = idMode == IdModell.Tatuering ? id : "";
+
+            String response = _req.DoCatRequest(inkId, chipId);
 
             if (response != String.Empty)
             {
-                return ParseCats(response, inkId, chiId);
+                return ParseCats(response, inkId, chipId);
             }
             throw new Exception("Empty response");
         }

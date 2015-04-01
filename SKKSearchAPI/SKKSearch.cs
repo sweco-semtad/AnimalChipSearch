@@ -7,10 +7,10 @@ namespace SKKSearchAPI
         /// <summary>
         /// Search dogs
         /// </summary>
-        /// <param name="inkId"></param>
-        /// <param name="chiId"></param>
+        /// <param name="idMode"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        AnimalList SearchDogs(String inkId, String chiId);
+        AnimalList SearchDogs(IdModell idMode, String id);
 
         /// <summary>
         /// Search for a specific dog
@@ -22,10 +22,10 @@ namespace SKKSearchAPI
         /// <summary>
         /// Search cats
         /// </summary>
-        /// <param name="inkId"></param>
-        /// <param name="chiId"></param>
+        /// <param name="idMode"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        AnimalList SearchCats(String inkId, String chiId);
+        AnimalList SearchCats(IdModell idMode, String id);
 
         /// <summary>
         /// Search for a specific cat

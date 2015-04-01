@@ -2,14 +2,15 @@
 using System.Windows;
 using System.Windows.Controls;
 using AnimalChipSearch.ViewModels;
-using SKKSearchAPI;
+//using SKKSearchAPI;
+using MahApps.Metro.Controls;
 
 namespace AnimalChipSearch
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
 
         private MainWindowViewModel _viewModel;

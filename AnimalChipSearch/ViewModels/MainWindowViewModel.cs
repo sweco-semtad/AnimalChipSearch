@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-//using System.Management;
 using SKKSearchAPI;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -40,9 +39,7 @@ namespace AnimalChipSearch.ViewModels
 
         public EmptyControlViewModel EmptyControlViewModel { get; set; }
 
-        public String TxtbChipId { get; set; }
-
-        public String TxtbInkId { get; set; }
+        public String TxtId { get; set; }
 
         private Boolean _isUIEnabled;
         public Boolean IsUIEnabled
@@ -55,17 +52,34 @@ namespace AnimalChipSearch.ViewModels
             }
         }
 
+        private Boolean _catMode;
+        public Boolean CatMode
+        {
+            get { return _catMode; }
+            set
+            {
+                _catMode = value;
+                RaisePropertyChanged("CatMode");
+            }
+        }
+
+        private Boolean _idMode;
+        public Boolean IdMode
+        {
+            get { return _idMode; }
+            set
+            {
+                _idMode = value;
+                RaisePropertyChanged("IdMode");
+            }
+        }
+
         private UsbReaderWriter _usbBgObject;
 
         /// <summary>
         /// Constructor
         /// </summary>
         public MainWindowViewModel() {
-            // Initialize the combobox for djurslag
-            DjurslagList = new ObservableCollection<DjurslagViewModel>();
-            DjurslagList.Add(new DjurslagViewModel { Djurslag = Djurslag.Hund });
-            DjurslagList.Add(new DjurslagViewModel { Djurslag = Djurslag.Katt });
-            _selectedDjurslag = DjurslagList[0];
 
             IsUIEnabled = true;
 
@@ -85,26 +99,6 @@ namespace AnimalChipSearch.ViewModels
             Application.Current.Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
         }
 
-        private DjurslagViewModel _selectedDjurslag;
-        public DjurslagViewModel SelectedDjurslag
-        {
-            get { return _selectedDjurslag; }
-            set {
-                _selectedDjurslag = value;
-                RaisePropertyChanged("SelectedDjurslag");
-            }
-        }
-
-        private ObservableCollection<DjurslagViewModel> _djurslagList;
-        public ObservableCollection<DjurslagViewModel> DjurslagList
-        {
-            get { return _djurslagList; }
-            set { 
-                _djurslagList = value;
-                RaisePropertyChanged("DjurslagList");
-            }
-        }
-
         private async void SearchAnimals()
         {
             try
@@ -113,7 +107,9 @@ namespace AnimalChipSearch.ViewModels
                 EmptyControlViewModel.Text = "Söker...";
                 CurrentView = EmptyControlViewModel;
 
-                var djurslag = _selectedDjurslag.Djurslag;
+                var djurslag = _catMode ? Djurslag.Katt : Djurslag.Hund;
+
+                var idMode = _idMode ? IdModell.Tatuering : IdModell.Chip;
 
                 AnimalList responseObject = null;
 
@@ -121,11 +117,11 @@ namespace AnimalChipSearch.ViewModels
                 {
                     if (djurslag == Djurslag.Hund)
                     {
-                        responseObject = skkSearch.SearchDogs(TxtbInkId, TxtbChipId);
+                        responseObject = skkSearch.SearchDogs(idMode, TxtId);
                     }
                     else
                     {
-                        responseObject = skkSearch.SearchCats(TxtbInkId, TxtbChipId);
+                        responseObject = skkSearch.SearchCats(idMode, TxtId);
                     }
                 });
 
@@ -208,19 +204,28 @@ namespace AnimalChipSearch.ViewModels
         /// <param name="chipId"></param>
         public void ChipIdRead(String chipId)
         {
-            TxtbChipId = chipId;
+            TxtId = chipId;
             RaisePropertyChanged("TxtbChipId");
             SearchAnimals();
         }
 
+        /// <summary>
+        /// Notification that a reader is connected or disconnected
+        /// </summary>
+        /// <param name="deviceConnected">True: device connected, False: device disconnected</param>
         public void DeviceConnectionEvent(bool deviceConnected)
         {
-            MessageBox_Show(null, "Device connection change: " + deviceConnected, "ChipId", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.None);
+            // TODO visa att läsaren är ansluten
+            //MessageBox_Show(null, "Device connection change: " + deviceConnected, "ChipId", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.None);
         }
 
+        /// <summary>
+        /// Read error from the RFID reader
+        /// </summary>
+        /// <param name="message"></param>
         public void ReadError(string message)
         {
-            MessageBox_Show(null, "Läsfel: " + message, "ChipId", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.None);
+            MessageBox_Show(null, "Läsfel: " + message, "Läsfel", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.None);
         }
 
         private void DisableUI()
@@ -239,12 +244,25 @@ namespace AnimalChipSearch.ViewModels
             SearchAnimals();
         }
 
+        //void FlipButton()
+        //{
+        //    if (FlipButtonText == ChipId) {
+        //        FlipButtonText = TatooId;
+        //    }
+        //    else {
+        //        FlipButtonText = ChipId;
+        //    }
+        //}
+
         bool CanExecuteSearch()
         {
             return true;
         }
 
         public ICommand InitSearchCommand { get { return new RelayCommand(InitSearch, CanExecuteSearch); } }
+
+        //public ICommand FlipButtonCommand { get { return new RelayCommand(FlipButton, CanExecuteSearch); } }
+
 
         #endregion
 

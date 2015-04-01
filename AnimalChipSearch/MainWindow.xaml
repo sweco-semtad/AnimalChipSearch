@@ -1,9 +1,10 @@
-﻿<Window x:Class="AnimalChipSearch.MainWindow"
+﻿<Controls:MetroWindow x:Class="AnimalChipSearch.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:AnimalChipSearch.ViewModels"
         xmlns:localViews="clr-namespace:AnimalChipSearch.Views"
-        Title="Sök efter hundar eller katter" MinWidth="650" Width="650" MinHeight="400" Height="400">
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        Title="Sök efter hundar eller katter" MinWidth="650" Width="650" MinHeight="400" Height="700">
     <Window.Resources>
         <DataTemplate DataType="{x:Type local:DogViewModel}">
             <localViews:DogView />
@@ -17,6 +18,15 @@
         <DataTemplate DataType="{x:Type local:EmptyControlViewModel}">
             <localViews:Empty />
         </DataTemplate>
+
+        <!--<Image x:Key="CatIcon" Source="./Resources/Cat.png" Height="50" Width="50" />
+        <Image x:Key="DogIcon" Source="./Resources/Dog.png" Height="50" Width="50" />-->
+        
+        <ResourceDictionary x:Key="abc">
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Resources/Icons.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Window.Resources>
     <Grid Margin="5,5,5,5">
         <Grid.RowDefinitions>
@@ -27,41 +37,67 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100" />
-                <ColumnDefinition Width="200" />
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="80" />
+                <ColumnDefinition Width="80" />
+                <ColumnDefinition Width="40" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-
-            <Label Content="Chip-ID:"
-                   VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
-                   Grid.Row="0" Grid.Column="0"/>
-            <TextBox x:Name="chipIdTxt" TextWrapping="NoWrap" MaxLength="15" Margin="0,0,0,5"
+            
+            <ToggleButton x:Name="FlipAnimalButton" IsChecked="{Binding CatMode}" IsEnabled="{Binding IsUIEnabled}"
+                    Margin="0,0,10,0"
+                    Grid.Column="1"
+                    ToolTip="Växla mellan att söka på hundar eller katter">
+                <ToggleButton.Template>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <StackPanel>
+                            <Image Name="cat" Source="./Resources/Cat.png" Stretch="None" Visibility="Collapsed" />
+                            <Image Name="dog" Source="./Resources/Dog.png" Stretch="None" Visibility="Visible" />
+                        </StackPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="true">
+                                <Setter TargetName="cat" Property="Visibility" Value="Visible" />
+                                <Setter TargetName="dog" Property="Visibility" Value="Collapsed" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </ToggleButton.Template>
+            </ToggleButton>
+            
+            <ToggleButton x:Name="FlipIdButton" IsChecked="{Binding IdMode}" IsEnabled="{Binding IsUIEnabled}"
+                    Margin="0,0,10,0" Height="50"
+                    Grid.Column="2"
+                    ToolTip="Växla mellan att söka på tatuering eller chip">
+                <ToggleButton.Template>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <StackPanel>
+                            <Image Name="chip" Source="./Resources/Rfid.png" Stretch="None" Visibility="Visible" />
+                            <Image Name="tatoo" Source="./Resources/Tatoo.png" Stretch="None" Visibility="Collapsed" />
+                        </StackPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="true">
+                                <Setter TargetName="chip" Property="Visibility" Value="Collapsed" />
+                                <Setter TargetName="tatoo" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </ToggleButton.Template>
+            </ToggleButton>
+            <!--<Button x:Name="FlipChipButton" Content="{Binding FlipButtonText}" Command="{Binding FlipButtonCommand}" IsEnabled="{Binding IsUIEnabled}"
+                    Margin="0,0,10,0" FontSize="18"
+                    Grid.Column="1"
+                    ToolTip="Tooltip"/>-->
+            <TextBox x:Name="chipIdTxt" TextWrapping="NoWrap" MaxLength="15" Margin="0,0,10,0"
                      VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" FontSize="23"
-                     Grid.Row="0" Grid.Column="1"
-                     Text="{Binding TxtbChipId}"  IsEnabled="{Binding IsUIEnabled}"/>
-
-            <Label Content="Tatuerings-ID:"
-                   VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
-                   Grid.Row="1" Grid.Column="0"/>
-            <TextBox x:Name="inkIdTxt" TextWrapping="NoWrap" MaxLength="15" Margin="0,0,0,5"
-                     VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" FontSize="23"
-                     Grid.Row="1" Grid.Column="1"
-                     Text="{Binding TxtbInkId}"  IsEnabled="{Binding IsUIEnabled}"/>
-
-            <Label Content="Djurslag:"
-                   VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
-                   Grid.Row="2" Grid.Column="0"/>
-            <ComboBox x:Name="DjurslagCB" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-                      FontSize="23"  Grid.Row="2" Grid.Column="1"
-                      ItemsSource="{Binding DjurslagList}" SelectedItem="{Binding SelectedDjurslag, Mode=TwoWay}" IsSynchronizedWithCurrentItem="True" DisplayMemberPath="Name"
-                       IsEnabled="{Binding IsUIEnabled}"/>
+                     Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4"
+                     Text="{Binding TxtId}" IsEnabled="{Binding IsUIEnabled}" />
 
             <Button x:Name="SearchButton" Content="Sök" Command="{Binding InitSearchCommand}" IsEnabled="{Binding IsUIEnabled}"
-                    Margin="10,0,0,0" FontSize="23" Grid.Row="0" Grid.Column="2" Grid.RowSpan="3"/>
+                    Margin="10,0,0,0" FontSize="23"
+                    Grid.Row="0" Grid.Column="4" Grid.RowSpan="2" />
         </Grid>
         
         <Grid Margin="0,10" Grid.Row="1" >
@@ -69,4 +105,4 @@
         </Grid>
         
     </Grid>
-</Window>
+</Controls:MetroWindow>
