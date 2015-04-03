@@ -4,6 +4,7 @@ namespace SKKSearchAPI
 {
     public interface SKKSearch
     {
+
         /// <summary>
         /// Search dogs
         /// </summary>

@@ -17,9 +17,7 @@ namespace AnimalChipSearch.ViewModels
     public class MainWindowViewModel : ViewModelBase, RFIDChipIdReceiver
     {
         SKKRegisterSok.SKKSearch skkSearch = new SKKRegisterSok.SKKSearch();
-
-        //Thread _usbBgThread;
-
+        
         private ViewModelBase _currentView;
         public ViewModelBase CurrentView
         {
@@ -63,14 +61,19 @@ namespace AnimalChipSearch.ViewModels
             }
         }
 
-        private Boolean _idMode;
-        public Boolean IdMode
+        private static String ChipId = "Chip";
+        private static String TatooId = "Tatuering";
+
+        private IdModell _idMode = IdModell.Chip;
+
+        private String _flipButtonText;
+        public String FlipButtonText
         {
-            get { return _idMode; }
+            get { return _flipButtonText; }
             set
             {
-                _idMode = value;
-                RaisePropertyChanged("IdMode");
+                _flipButtonText = value;
+                RaisePropertyChanged("FlipButtonText");
             }
         }
 
@@ -82,6 +85,8 @@ namespace AnimalChipSearch.ViewModels
         public MainWindowViewModel() {
 
             IsUIEnabled = true;
+
+            FlipButtonText = ChipId;
 
             // Create view models
             SearchListViewModel = new SearchListViewModel(this);
@@ -109,19 +114,17 @@ namespace AnimalChipSearch.ViewModels
 
                 var djurslag = _catMode ? Djurslag.Katt : Djurslag.Hund;
 
-                var idMode = _idMode ? IdModell.Tatuering : IdModell.Chip;
-
                 AnimalList responseObject = null;
 
                 await Task.Run(() =>
                 {
                     if (djurslag == Djurslag.Hund)
                     {
-                        responseObject = skkSearch.SearchDogs(idMode, TxtId);
+                        responseObject = skkSearch.SearchDogs(_idMode, TxtId);
                     }
                     else
                     {
-                        responseObject = skkSearch.SearchCats(idMode, TxtId);
+                        responseObject = skkSearch.SearchCats(_idMode, TxtId);
                     }
                 });
 
@@ -244,15 +247,19 @@ namespace AnimalChipSearch.ViewModels
             SearchAnimals();
         }
 
-        //void FlipButton()
-        //{
-        //    if (FlipButtonText == ChipId) {
-        //        FlipButtonText = TatooId;
-        //    }
-        //    else {
-        //        FlipButtonText = ChipId;
-        //    }
-        //}
+        void FlipButton()
+        {
+            if (_idMode == IdModell.Chip)
+            {
+                FlipButtonText = TatooId;
+                _idMode = IdModell.Tatuering;
+            }
+            else
+            {
+                FlipButtonText = ChipId;
+                _idMode = IdModell.Chip;
+            }
+        }
 
         bool CanExecuteSearch()
         {
@@ -261,7 +268,7 @@ namespace AnimalChipSearch.ViewModels
 
         public ICommand InitSearchCommand { get { return new RelayCommand(InitSearch, CanExecuteSearch); } }
 
-        //public ICommand FlipButtonCommand { get { return new RelayCommand(FlipButton, CanExecuteSearch); } }
+        public ICommand FlipButtonCommand { get { return new RelayCommand(FlipButton, CanExecuteSearch); } }
 
 
         #endregion

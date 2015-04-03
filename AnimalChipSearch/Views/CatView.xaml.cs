@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 using SKKSearchAPI;
 using AnimalChipSearch.ViewModels;
 
+using System.Diagnostics;
+
 namespace AnimalChipSearch.Views
 {
     /// <summary>
@@ -25,6 +27,14 @@ namespace AnimalChipSearch.Views
         public CatView()
         {
             InitializeComponent();
+
+            link.RequestNavigate += link_RequestNavigate;
+        }
+
+        void link_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
         }
     }
 }

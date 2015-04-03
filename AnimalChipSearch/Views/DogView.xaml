@@ -103,7 +103,10 @@
                     <Run Text="{Binding OwnerTelMobil, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Style="{StaticResource smallText}">
-                    Uppgifterna är hämtade från SKKs register. Länk till sidan: [länk]
+                    Uppgifterna är hämtade från SKKs register. Länk till sidan:
+                    <Hyperlink Name="link" NavigateUri="{Binding Url, Mode=OneWay}">
+                        <Run Text="{Binding Url, Mode=OneWay}" />
+                    </Hyperlink>
                 </Paragraph>
             </FlowDocument>
         </FlowDocumentScrollViewer>

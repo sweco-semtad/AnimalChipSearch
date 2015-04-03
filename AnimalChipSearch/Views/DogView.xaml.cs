@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using System.Diagnostics;
+
 namespace AnimalChipSearch.Views
 {
     /// <summary>
@@ -23,6 +25,14 @@ namespace AnimalChipSearch.Views
         public DogView()
         {
             InitializeComponent();
+
+            link.RequestNavigate += link_RequestNavigate;
+        }
+
+        void link_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
         }
     }
 }

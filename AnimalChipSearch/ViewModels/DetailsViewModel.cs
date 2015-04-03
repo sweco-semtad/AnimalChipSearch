@@ -48,6 +48,7 @@ namespace AnimalChipSearch.ViewModels
                 RaisePropertyChanged("OwnerTelHem");
                 RaisePropertyChanged("OwnerTelArbete");
                 RaisePropertyChanged("OwnerTelMobil");
+                RaisePropertyChanged("Url");
             }
         }
 
@@ -181,6 +182,21 @@ namespace AnimalChipSearch.ViewModels
         public String OwnerTelMobil
         {
             get { return _animal != null ? _animal.Agare.TelMobil : "-"; }
+        }
+
+        public String Url
+        {
+            get
+            {
+                if (_animal != null && _animal.DbId != null)
+                {
+                    return _animal.Species == SKKSearchAPI.Djurslag.Hund ?
+                        SKKUrls.DogUrl + _animal.DbId :
+                        SKKUrls.CatUrl + _animal.DbId;
+                }
+
+                return "";
+            }
         }
 
         #region Commands
